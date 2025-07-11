@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "frontend service for edtube",
+  "scripts": {
+    "test": "jest",
+    "start": "parcel index.html",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asv02/EdTube.git"
+  },
+  "keywords": [
+    "EdTube"
+  ],
+  "author": "Akash Suryavanshi (asv02)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asv02/EdTube/issues"
+  },
+  "homepage": "https://github.com/asv02/EdTube#readme",
+  "dependencies": {
+    "parcel": "^2.15.4"
+  }
+}

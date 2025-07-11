@@ -1,0 +1,22 @@
+const jwt = require('jsonwebtoken');
+
+const auth = (req,res,next)=>
+    {
+       const token = req.cookies.access_token;
+       if(!token) 
+        {
+            throw new Error("Authentication failed, token not found");
+        }
+        const verification = jwt.verify(token, "Akash@#123");
+        if(!verification)
+            {
+                throw new Error("Authentication failed, invalid token");
+            }
+        const userId = verification._id;
+        const userRole = verification.role;
+        console.log("userId:",userId)
+        console.log("userRole:",userRole)
+        next();
+    }
+
+module.exports = auth;
