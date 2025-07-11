@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../modals/Users");
 const bcrypt = require("bcrypt");
+const auth = require("../middlewares/auth")
 const jwt = require("jsonwebtoken");
 const signupValidator = require("../utils/signupValidator");
 const loginValidator = require("../utils/loginValidator");
@@ -62,8 +63,12 @@ router.post("/user/emaillogin", async (req, res, next) => {
       throw new Error("Invalid Credentials");
     }
     //generate token
-    const access_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:10});
+    const access_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:60});
     const refresh_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:15*60});
+    
+    user.RefreshToken = refresh_token;
+    await user.save();
+    
     //send token and user data in response
     res.cookie('access_token',access_token)
     res.cookie('refresh_token',refresh_token)
@@ -73,9 +78,26 @@ router.post("/user/emaillogin", async (req, res, next) => {
   }
 });
 
-router.get('/get-refresh-token',(req,res)=>
+router.post('/user/logout',auth,async(req,res)=>
+  {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if(!user)
+      {
+        throw new Error("User not found");
+      }
+    user.RefreshToken = null;
+    await user.save();
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    res.status(200).json({ message: "Logout successful" });
+  })
+
+
+router.get('/get-refresh-token',async(req,res)=>
   {
     const refresh_token = req.cookies.refresh_token;
+    console.log("refresh_token:",typeof(refresh_token))
     if(!refresh_token)
       {
         throw new Error("Please Login!");
@@ -87,7 +109,18 @@ router.get('/get-refresh-token',(req,res)=>
       }
       const userId = verification._id;
       const userRole = verification.role;
-      const access_token = jwt.sign({ _id: userId,role:userRole},"Akash@#123",{expiresIn:10});
+      
+      const dbRefreshToken = await User.findById(userId).select('RefreshToken');const dbRefreshTokenValue= dbRefreshToken.RefreshToken;
+
+      console.log("dbRefreshToken:",dbRefreshTokenValue)
+      console.log("refresh_token:",refresh_token)
+
+      if(refresh_token != dbRefreshTokenValue)
+        {
+          throw new Error("Invalid User!!!");
+        }
+
+      const access_token = jwt.sign({ _id: userId,role:userRole},"Akash@#123",{expiresIn:60});
       res.cookie('access_token',access_token)
       res.status(200).json({ message: "Refresh token validated successfully" });
   })

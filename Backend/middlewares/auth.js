@@ -15,7 +15,7 @@ const auth = (req,res,next)=>
         const userId = verification._id;
         const userRole = verification.role;
         console.log("userId:",userId)
-        console.log("userRole:",userRole)
+        req.user = { _id: userId, role: userRole };
         next();
     }
 

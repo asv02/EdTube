@@ -84,6 +84,16 @@ const UserSchema = new mongoose.Schema({
       }
     },
   },
-});
+  RefreshToken:
+  {
+    type:String,
+    default:null,
+    validate(value) {
+      if (value && !validator.isJWT(value)) {
+        throw new Error("Invalid Refresh Token");
+      }
+    }
+  }
+},{timestamps: true});
 
 module.exports = mongoose.model("User", UserSchema);
