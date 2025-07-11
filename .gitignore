@@ -1,15 +1,18 @@
-# Node modules
-/node_modules
+# Node modules (both Backend and Frontend)
+Backend/node_modules/
+Frontend/node_modules/
 
-# Parcel cache
-/parcel-cache
+# Parcel cache (Frontend)
+Frontend/.parcel-cache/
 
 # Logs
 *.log
 
 # Build output
-/dist
-/build
+Frontend/dist/
+Frontend/build/
+Backend/dist/
+Backend/build/
 
 # Environment variables
 .env
@@ -18,5 +21,4 @@
 .DS_Store
 Thumbs.db
 
-# IDE files
-.vscode/
+# IDE
