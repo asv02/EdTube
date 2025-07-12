@@ -21,11 +21,15 @@
   },
   "homepage": "https://github.com/asv02/EdTube#readme",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "browser-router": "^0.2.0",
     "parcel": "^2.15.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.6.3"
+    "react-redux": "^9.2.0",
+    "react-router": "^7.6.3",
+    "redux": "^5.0.1",
+    "redux-toolkit": "^1.1.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",

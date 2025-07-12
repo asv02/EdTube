@@ -1,21 +1,27 @@
 import React from "react";
 import "./index.css";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
+import Auth from "./components/Auth";
+import NavBar from "./components/NavBar";
+import Feed from "./components/Feed";
 import Body from "./components/Body";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router";
+import { Provider } from "react-redux";
+import AppStore from "./utils/appStore";
 
 const App = () => {
   return (
-    <Router basename="/">
-      <Routes>
-        <Route path="/" element={<Body />}>
-          <Route path="/login" element={<Login />} />
-        </Route>
-          <Route path="/signup" element={<SignUp />} />
-      </Routes>
-    </Router>
+    <Provider store={AppStore}>
+      <Router basename="/">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Body />}>
+            <Route path="/user/auth" element={<Auth />} />
+            <Route path="/user/feed" element={<Feed />} />
+          </Route>
+        </Routes>
+      </Router>
+    </Provider>
   );
 };
 

@@ -72,7 +72,7 @@ router.post("/user/emaillogin", async (req, res, next) => {
     //send token and user data in response
     res.cookie('access_token',access_token)
     res.cookie('refresh_token',refresh_token)
-    res.status(200).json({ message: "Login validation successful" });
+    res.status(200).json({ message: "Login validation successful" ,user:{FirstName:user.FirstName,LastName:user.LastName,PhotoUrl:user.PhotoUrl}});
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -90,6 +90,7 @@ router.post('/user/logout',auth,async(req,res)=>
     await user.save();
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
+    
     res.status(200).json({ message: "Logout successful" });
   })
 
