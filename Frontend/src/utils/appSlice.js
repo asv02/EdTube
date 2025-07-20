@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const UserSlice = createSlice(
     {
         name:"UserSlice",
-        initialState:[],
+        initialState:JSON.parse(localStorage.getItem('user')) || null,
         reducers:
         {
             addUser:(state,action)=>
@@ -34,8 +34,28 @@ const FeedSlice = createSlice(
         }
     })
 
+const SearchSlice = createSlice(
+    {
+        name:"SearchSlice",
+        initialState:[],
+        reducers:
+        {
+            addSuggestion:(state,action)=>
+                {
+                    return Object.assign(state,action.payload)
+                },
+            removeSuggestion:(state,action)=>
+                {
+                    return null;
+                }
+        }
+    })    
+
 
 export const {addUser,removeUser} = UserSlice.actions
 export const {addFeed,removeFeed} = FeedSlice.actions
-export const  UserReducer = UserSlice.reducer
-export const  FeedReducer = FeedSlice.reducer
+export const {addSuggestion,removeSuggestion} = SearchSlice.actions
+
+export const  UserReducer = UserSlice.reducer;
+export const  FeedReducer = FeedSlice.reducer;
+export const SearchReducer = SearchSlice.reducer;

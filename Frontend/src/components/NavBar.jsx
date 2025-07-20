@@ -1,22 +1,53 @@
+import { useEffect, useState } from "react";
+import {useDispatch,useSelector} from 'react-redux'
+import { addSuggestion, removeUser } from "../utils/appSlice";
+import {Link, useNavigate} from 'react-router'
+import { BASE_URL } from "../utils/Constants";
+
 const NavBar = () => {
+  const [search, SetSearch] = useState("");
+  const [suggestion,setSuggestion] = useState({});
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const handleSearch = async(query) =>
+  const handleSearch = async (query) => {
+    const data = await fetch(
+      "https://suggestqueries.google.com/complete/search?client=firefox&q=" +
+        query
+    );
+
+    if (!data.ok) {
+      throw new Error("Error while suggestion");
+    }
+    const res = await data.json();
+    dispatch(addSuggestion({search:res[1]})) // for caching
+    console.log("Suggestion response", res);
+  };
+  ///     Need to implement search algorithm  
+
+  const handleLogout = async()=>
     {
-       const data= await fetch('https://suggestqueries.google.com/complete/search?client=firefox&q='+query)
-
-       if(!data.ok)
+       const data = await fetch(BASE_URL+'user/logout',
         {
-          throw new Error('Error while suggestion')
-        }
-        const res = data.json()
-        console.log("Suggestion response",res)
+          method:'POST',
+          credentials:'include'
+        })
+        if(!data.ok)
+          {
+            console.log(`error in logging out!!`)
+            return;
+          }
+          localStorage.clear()
+          dispatch(removeUser())
+          navigate('/user/auth')
     }
 
 
+  useEffect(() => 
+    {}, [search]);
 
   return (
     <div className="navbar bg-base-200 shadow-sm">
-
       <div className="navbar-start">
         <a className="btn btn-ghost text-xl">EdTube</a>
       </div>
@@ -39,7 +70,13 @@ const NavBar = () => {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" placeholder="Search" className="w-40 md:w-64 lg:w-90" />
+          <input
+            type="search"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => SetSearch(e.target.value)}
+            className="w-40 md:w-64 lg:w-90"
+          />
         </label>
       </div>
 
@@ -67,8 +104,12 @@ const NavBar = () => {
                 <span className="badge">New</span>
               </a>
             </li>
-            <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li>
+              <Link to='/user/chat'>Chat</Link>
+            </li>
+            <li>
+              <a onClick={handleLogout}>Logout</a>
+            </li>
           </ul>
         </div>
       </div>

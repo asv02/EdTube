@@ -37,6 +37,7 @@ const Login = () => {
       const response = await data.json();
       console.log("Login Response:", response);
       dispatch(addUser(response));
+      localStorage.setItem('user',JSON.stringify(response))
       naviagate('/user/feed')
     } catch (error) {
       console.log("Error during login:", error);

@@ -10,6 +10,7 @@ router.get('/user/getuser',auth,async(req,res)=>
             message:"User details fetched successfully",
             user:req.user
         });
-    })
+    })   
+
 
 module.exports = router

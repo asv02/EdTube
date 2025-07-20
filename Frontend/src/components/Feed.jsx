@@ -8,10 +8,9 @@ import ShimmerUi from "./ShimmerUi";
 
 const Feed = () => {
   const dispatch = useDispatch();
-
   const handleFeed = async () => {
     const data = await fetch(
-      "https://www.googleapis.com/youtube/v3/search?part=snippet&q=machine+learning&type=video&maxResults=20&key=" +
+      "https://www.googleapis.com/youtube/v3/search?part=snippet&q=machine+learning&type=video&maxResults=2&key=" +
         YT_API_KEY
     );
 

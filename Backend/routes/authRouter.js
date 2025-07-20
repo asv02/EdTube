@@ -53,18 +53,20 @@ router.post("/user/emaillogin", async (req, res, next) => {
     //validation of login body
     loginValidator(req);
     //find user by email
+    console.log('Email supplied in Backend->',Email, " ",typeof(Email))
     const user = await User.findOne({ Email: Email });
+    console.log('User->',user)
     if (!user) {
-      throw new Error("Invalid Credentials");
+      throw new Error("Invalid Credential");
     }
     //compare password
     const comparePassword = await bcrypt.compare(Password, user.Password);
     if (!comparePassword) {
-      throw new Error("Invalid Credentials");
+      throw new Error("Invalid Credentials(Password- Remove after Testing)");
     }
     //generate token
-    const access_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:60});
-    const refresh_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:15*60});
+    const access_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:'6h'});
+    const refresh_token = jwt.sign({ _id: user._id,role:user.Role}, "Akash@#123",{expiresIn:'1d'});
     
     user.RefreshToken = refresh_token;
     await user.save();
@@ -72,7 +74,7 @@ router.post("/user/emaillogin", async (req, res, next) => {
     //send token and user data in response
     res.cookie('access_token',access_token)
     res.cookie('refresh_token',refresh_token)
-    res.status(200).json({ message: "Login validation successful" ,user:{FirstName:user.FirstName,LastName:user.LastName,PhotoUrl:user.PhotoUrl}});
+    res.status(200).json({ message: "Login validation successful" ,user:{userId:user._id,FirstName:user.FirstName,LastName:user.LastName,PhotoUrl:user.PhotoUrl}});
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -80,7 +82,7 @@ router.post("/user/emaillogin", async (req, res, next) => {
 
 router.post('/user/logout',auth,async(req,res)=>
   {
-    const userId = req.user._id;
+    try{const userId = req.user._id;
     const user = await User.findById(userId);
     if(!user)
       {
@@ -91,7 +93,11 @@ router.post('/user/logout',auth,async(req,res)=>
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
     
-    res.status(200).json({ message: "Logout successful" });
+    res.status(200).json({ message: "Logout successful" });}
+    catch(err)
+    {
+      console.log(`Error in loging out of user!! ${err.message}`)
+    }
   })
 
 
